@@ -21,15 +21,6 @@ function formSubmission(event) {
   const newMessage = document.querySelector("#user-message").value;
   socket.emit("chatMessage", newMessage);
 }
-/*
-socket.on('messageToClients',(msg) => {
-    //console.log(data);
-    console.log(msg);
-    const newMsg = buildHTML(msg);
-    
-})
-
-*/
 
 function buildHTML(msg) {
   const newHTML = `
