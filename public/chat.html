@@ -1,71 +1,74 @@
-  
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link rel="stylesheet" type="text/css" href="./styles.css">
+<link
+  rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+  crossorigin="anonymous"
+/>
+<link rel="stylesheet" type="text/css" href="./styles.css" />
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-1 namespaces">
-            
+  <div class="row">
+    <div class="col-sm-1 namespaces"></div>
+    <div class="col-sm-2 rooms">
+      <h3>Rooms</h3>
+      <ul class="room-list">
+        <!-- JS will update this dynamically!! -->
+      </ul>
+    </div>
+    <div class="chat-panel col-sm-9">
+      <div class="room-header row col-6">
+        <div class="col-sm-3">
+          <span class="curr-room-text">Current Room</span>
+          <span class="curr-room-num-users"
+            >Users <span class="glyphicon glyphicon-user"></span
+          ></span>
         </div>
-        <div class="col-sm-2 rooms">
-            <h3>Rooms</h3>
-            <ul class="room-list">
-                <!-- JS will update this dynamically!! -->
-            </ul>
+        <div class="col-sm-3 search pull-right">
+          <span class="glyphicon glyphicon-search"></span>
+          <input type="text" id="search-box" placeholder="Search" />
         </div>
-        <div class="chat-panel col-sm-9">
-            <div class="room-header row col-6">
-                <div class="col-sm-3"><span class="curr-room-text">Current Room</span> <span class="curr-room-num-users">Users <span class="glyphicon glyphicon-user"></span></span></div>
-                <div class="col-sm-3 search pull-right">
-                        <span class="glyphicon glyphicon-search"></span>
-                    <input type="text" id="search-box" placeholder="Search" />
-                </div>
-            </div> 
-            <div class="message-form">
-                <form id="user-input">
-                    <div class="col-sm-12">
-                        <input id="user-message" type="text" placeholder="Enter your message" />
-                    </div>
-                    <!-- <div class="col-sm-2">
+      </div>
+      <div class="message-form">
+        <form id="user-input">
+          <div class="col-sm-12">
+            <input
+              id="user-message"
+              type="text"
+              placeholder="Enter your message"
+            />
+          </div>
+          <!-- <div class="col-sm-2">
                         <input class="btn btn-primary" type="submit" value="send" />
                     </div> -->
-                </form>
-            </div>
-            <ul id="messages" class="col-sm-12">
-                <li>
-                    <div class="user-image">
-                    </div>
-                    <div class="user-message">
-                    
-                    </div>
-                </li>
+        </form>
+      </div>
+      <ul id="messages" class="col-sm-12">
+        <li>
+          <div class="user-image"></div>
+          <div class="user-message"></div>
+        </li>
 
-                <li>
-                    <div class="user-image">
-                    </div>
-                    <div class="user-message">
-       
-                    </div>
-                </li>
-                <li>
-                    <div class="user-image">
-                    </div>
-                    <div class="user-message">
-                       
-                    </div>
-                </li>
-                <li>
-                    <div class="user-image">
-                    </div>
-                    <div class="user-message">
-      
-                    </div>
-                </li>
-
-            </ul>
-        </div>
+        <li>
+          <div class="user-image"></div>
+          <div class="user-message"></div>
+        </li>
+        <li>
+          <div class="user-image"></div>
+          <div class="user-message"></div>
+        </li>
+        <li>
+          <div class="user-image"></div>
+          <div class="user-message"></div>
+        </li>
+      </ul>
     </div>
+  </div>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+  integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+  crossorigin="anonymous"
+></script>
 <script src="/chat.js"></script>

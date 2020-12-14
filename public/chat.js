@@ -1,36 +1,47 @@
 const socket = io("http://localhost:3000");
 
+// get the username from query params
+const { username } = Qs.parse(location.search, {
+  ignoreQueryPrefix: true,
+});
 
-document.querySelector('.message-form').addEventListener('submit',formSubmission)
+// Join user in
+socket.emit("join", { username });
 
-function formSubmission(event){
-    event.preventDefault();
-   const newMessage =  document.querySelector('#user-message').value;
-   socket.emit('newMessageToServer', {text: newMessage})
-   const a = 'Static'
-   socket.emit('StaticToServer',(a))
+socket.on("message", (message) => {
+  document.querySelector("#messages").innerHTML += buildHTML(message);
+});
+
+document
+  .querySelector(".message-form")
+  .addEventListener("submit", formSubmission);
+
+function formSubmission(event) {
+  event.preventDefault();
+  const newMessage = document.querySelector("#user-message").value;
+  socket.emit("chatMessage", newMessage);
 }
-
+/*
 socket.on('messageToClients',(msg) => {
     //console.log(data);
     console.log(msg);
     const newMsg = buildHTML(msg);
-    document.querySelector('#messages').innerHTML += newMsg
+    
 })
 
+*/
 
-
-function buildHTML(msg){
-    const newHTML = `
+function buildHTML(msg) {
+  const newHTML = `
     <li>
     <div class="user-image">
         <img src="https://via.placeholder.com/30" />
     </div>
     <div class="user-message">
-        <div class="user-name-time">${msg.username}<span>${msg.time}</span></div>
+        <div class="user-name-time">${msg.username}</div>
         <div class="message-text">${msg.text}</div>
     </div>
 </li>
-    `
-    return newHTML;
+    `;
+  return newHTML;
 }
