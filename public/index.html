@@ -6,9 +6,22 @@
   <title>Example Socket</title>
 </head>
 <body>
-  <form action="chat.html">
+  <form id="enter-room">
     <input type="text" name="username" id="username" placeholder="username" required>
     <button type="submit">Join Now!</button>
   </form>
+  <script>
+    document.querySelector("#enter-room").addEventListener("submit", onsubmit);
+    function onsubmit(event) {
+      event.preventDefault();
+      const username = document.querySelector("#username").value;
+
+      if (username === 'admin') {
+        window.location = '/admin.html?username=admin'
+      } else {
+        window.location = `/chat.html?username=${username}`;
+      }
+    }
+  </script>
 </body>
 </html>
