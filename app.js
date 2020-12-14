@@ -1,26 +1,46 @@
 const express = require('express');
-const app = express();
 const socketio = require('socket.io');
+const path = require('path');
+const http = require('http');
 
-app.use(express.static(__dirname + '/public'));
-const expressServer = app.listen(9000);
-const io = socketio(expressServer);
+// Local functions for managing user and message
+const { userJoin, currentUser, removeUser } = require('./utils/users');
+const formatMessage = require('./utils/messages');
 
+// init the express app and socket
+const app = express();
+const server = http.createServer(app);
+const io = socketio(server);
 
-io.on('connection', (socket) => {
-    console.log('Dobrodosli kiceni svatovi')
-})
-      
-io.of('/').on('connection',(socket) => {
-    const room = socket.room;
-    socket.on('newMessageToServer',(data) => {
-        socket.join('soba1')
-        console.log(room)
-        io.emit('messageToClients',data);
-        console.log(data);
-        socket.on('StaticToServer',(data) => {
-            io.to('soba1').emit('staticToClient', (data))
-        })
+// Handle any public pages or html pages
+app.use(express.static(path.join(__dirname, 'public')));
+
+const botName = 'Testing Bot';
+
+// Init the socket
+
+io.on('connection', socket => {
+    let username;
+    // Welcome the user
+    socket.on('join', ({ username, room }) => {
+        username = username;
+        // Add user to room
+        socket.join('room1');
+        socket.emit('message', `Welcome to room1 ${username}`);
+        // Broadcast to other users that he is joined
+        socket.broadcast.to('room1').emit('message', `${username} has joined the Chat`);
+    });
+    
+    // Listen for any messages from users
+    socket.on('chatMessage', msg => {
+        const user
     })
-   
+    
+    
+    // If This user disconnects then let everyone know that
 })
+
+
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

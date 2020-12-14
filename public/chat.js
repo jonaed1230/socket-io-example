@@ -1,4 +1,4 @@
-const socket = io("http://localhost:9000");
+const socket = io("http://localhost:3000");
 
 
 document.querySelector('.message-form').addEventListener('submit',formSubmission)
