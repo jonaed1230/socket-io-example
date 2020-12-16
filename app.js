@@ -2,9 +2,12 @@ const express = require("express");
 const socketio = require("socket.io");
 const path = require("path");
 const http = require("http");
+const mongoose = require("mongoose");
+
+const { DATABASE_URL } = process.env;
 
 // Local functions for managing user and message
-const { userJoin, currentUser, removeUser } = require("./utils/users");
+const { userJoin, removeUser } = require("./utils/users");
 const formatMessage = require("./utils/messages");
 
 // init the express app and socket
@@ -20,15 +23,21 @@ const botName = "Testing Bot";
 // Init the socket
 
 io.on("connection", (socket) => {
+  let nickname;
+  let roomname;
   // Welcome the user
-  socket.on("join", ({ username }) => {
+  socket.on("join", async ({ username, room }) => {
     if (username === "admin") {
-      const user = userJoin(socket.id, username, "admin");
-      socket.join(user.room);
+      await userJoin(username, room || "admin");
+      nickname = username;
+      await socket.join(room || "admin");
+      roomname = room;
     } else {
-      const user = userJoin(socket.id, username, "room1");
+      const user = userJoin(username, "room1");
       // Add user to room
       socket.join(user.room);
+      nickname = username;
+      roomname = room;
       socket.emit("message", formatMessage(botName, `Welcome to room1 ${username}`));
       // Broadcast to other users that he is joined
       socket.broadcast
@@ -43,22 +52,33 @@ io.on("connection", (socket) => {
 
   // Listen for any messages from users
   socket.on("chatMessage", (msg) => {
-    const user = currentUser(socket.id);
-    io.to(user.room).emit("message", formatMessage(user.username, msg));
+    io.to(roomname).emit("message", formatMessage(nickname, msg));
   });
 
   // If This user disconnects then let everyone know that
   socket.on("disconnect", () => {
-    const user = removeUser(socket.id);
+    const user = removeUser(nickname);
     if (user) {
-      io.to(user.room).emit(
+      io.to(roomname).emit(
         "message",
-        formatMessage(botName, `${user.username} has left the chat`)
+        formatMessage(botName, `${nickname} has left the chat`)
       );
     }
   });
 });
 
 const PORT = process.env.PORT || 3000;
+
+// Connect to the DataBase
+mongoose.connect(DATABASE_URL, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log("You are connected with your DB");
+}, (error) => {
+  console.log(error);
+});
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

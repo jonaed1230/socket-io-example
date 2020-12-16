@@ -1,27 +1,48 @@
-const users = [];
-
+const Chat = require("./model");
 // Join the users to the db
-const userJoin = (id, username, room ) => {
-  const user = { id, username, room };
-  users.push(user);
+const userJoin = async (username, room) => {
+  let user;
+  // check if the user exists or not
+  const userExists = await Chat.findOne({ username });
+  // check if the room exists or not
+  const roomExists = await Chat.findOne({ room: room });
+
+  if (!roomExists) {
+    try {
+      const r = await Chat.create({ room });
+      room = r;
+      if (userExists) {
+        user = username;
+      }
+      console.log("room created!");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  if (!userExists) {
+    await Chat.findByIdAndUpdate(
+      { room },
+      { $push: { usernames: { username } } },
+      { runValidators: true }
+    );
+    user = username;
+    if (roomExists) {
+      room = roomExists;
+    }
+    console.log("User is created");
+  }
+
+  return { username: user, room };
+};
+
+// When the user leaves the chat remove him from db
+const removeUser = async (username) => {
+  const user = await Chat.findOne({ username });
   return user;
 };
 
-// Get current user
-const currentUser = (id) => {
-  return users.find(user => user.id === id);
-}
-
-// When the user leaves the chat remove him from db
-const removeUser = (id) => {
-  const index = users.findIndex(user => user.id === id);
-  if (index !== -1) {
-    return user.splice(index, 1)[0];
-  }
-}
-
 module.exports = {
   userJoin,
-  currentUser,
-  removeUser
+  removeUser,
 };
