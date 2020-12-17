@@ -1,11 +1,9 @@
 const mongoose = require("mongoose");
 
 const chatSchema = new mongoose.Schema({
-  usernames: [
-    {
-      username: String,
-    }
-  ],
+  usernames: {
+      type: [String],
+  },
   room: {
     type: String,
   },

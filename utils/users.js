@@ -3,10 +3,9 @@ const Chat = require("./model");
 const userJoin = async (username, room) => {
   let user;
   // check if the user exists or not
-  const userExists = await Chat.findOne({ username });
+  const userExists = await Chat.findOne({ "usernames": username });
   // check if the room exists or not
   const roomExists = await Chat.findOne({ room: room });
-
   if (!roomExists) {
     try {
       const r = await Chat.create({ room });
@@ -21,9 +20,9 @@ const userJoin = async (username, room) => {
   }
 
   if (!userExists) {
-    await Chat.findByIdAndUpdate(
+    await Chat.findOneAndUpdate(
       { room },
-      { $push: { usernames: { username } } },
+      { $push: { usernames: username } },
       { runValidators: true }
     );
     user = username;
@@ -38,7 +37,7 @@ const userJoin = async (username, room) => {
 
 // When the user leaves the chat remove him from db
 const removeUser = async (username) => {
-  const user = await Chat.findOne({ username });
+  const user = await Chat.findOne({ "usernames": username });
   return user;
 };
 

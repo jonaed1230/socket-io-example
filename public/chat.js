@@ -1,15 +1,23 @@
 const socket = io("http://localhost:3000");
 
 // get the username from query params
-const { username } = Qs.parse(location.search, {
+const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
 
 // Join user in
-socket.emit("join", { username });
+socket.emit("join", { username, room });
+socket.emit("get-messages", { username, room });
+
 
 socket.on("message", (message) => {
   document.querySelector("#messages").innerHTML += buildHTML(message);
+});
+
+socket.on("messages", (data) => {
+  for (let i = 0; i < data.length; i++) {
+    document.querySelector("#messages").innerHTML += buildHTML({ username: data[i].username, text: data[i].chat });
+  }
 });
 
 document
